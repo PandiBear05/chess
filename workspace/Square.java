@@ -13,7 +13,7 @@ import javax.swing.*;
 public class Square extends JComponent {
 	//a reference back to the board that stores this square.
     private Board b;
-    
+     
     //true for white, false for black.
     private final boolean color;
     //if there's a piece on the square this stores it. If there isn't this stores null.
