@@ -96,8 +96,8 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
             board[0][i].put(new Piece(true, RESOURCES_WKING_PNG)); // White pieces on last row
         }
         for (int i = 0; i < 8; i++) {
-            board[4][i].put(new Piece(true, RESOURCES_wbarbarian_PNG)); // White pieces on second last row
-            board[7][i].put(new Piece(false, RESOURCES_barbarian_PNG)); // White pieces on last row
+            board[4][i].put(new Barbarian(true, RESOURCES_wbarbarian_PNG)); // White pieces on second last row
+            board[7][i].put(new Barbarian(false, RESOURCES_barbarian_PNG)); // White pieces on last row
             
         }
         
@@ -169,7 +169,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
     @Override
     public void mouseReleased(MouseEvent e) {
         Square endSquare = (Square) this.getComponentAt(new Point(e.getX(), e.getY()));
-        if (fromMoveSquare != null) {
+        if (fromMoveSquare != null && whiteTurn == currPiece.getColor()) {
             if (currPiece != null && currPiece.getLegalMoves(this, fromMoveSquare).contains(endSquare) ) {
                 if(currPiece instanceof Barbarian){
                     Barbarian b = (Barbarian) currPiece;
@@ -189,6 +189,17 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
                     } else if (endSquare.isOccupied() && endSquare.getOccupyingPiece().getColor() == !b.getColor()) {
                         fromMoveSquare.removePiece();
                         whiteTurn = !whiteTurn;
+
+                        for (Square[] row : board) {
+                            for (Square s : row) {
+                                s.setBorder(null);
+                            }
+                        }
+                        fromMoveSquare.setDisplay(true);
+                
+                        currPiece = null;
+                        repaint();
+
                         return;
                     }
                     
@@ -202,14 +213,14 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
                 else {
 
                     fromMoveSquare.removePiece();
-                    if (/* currPiece instanceof Barbarian && */ endSquare.isOccupied()) { // checks if barbarian
+                    if (currPiece instanceof Barbarian &&  endSquare.isOccupied()) { // checks if barbarian
                                                                                           // captured a
                                                                                           // piece
                         b.captured = true;
                     } else {
                         b.captured = false;
                     }
-                    if (/* currPiece instanceof Barbarian && */ b.captured) { // if barbarian captured
+                    if (currPiece instanceof Barbarian &&  b.captured) { // if barbarian captured
                                                                                       // a piece, it will be
                                                                                       // the same player's turn
                         whiteTurn = currPiece.getColor();
@@ -239,7 +250,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
         currX = e.getX() - 24;
         currY = e.getY() - 24;
 
-        if (currPiece != null) {
+        if (currPiece != null && whiteTurn == currPiece.getColor()) {
             for (Square s : currPiece.getLegalMoves(this, fromMoveSquare)) {
                 s.setBorder(BorderFactory.createLineBorder(Color.CYAN));
 

@@ -38,8 +38,16 @@ public class Piece {
 	
 
 // to be overriden in each subclass
-	public ArrayList<Square> getLegalMoves(Board b, Square currentSquare) {
-		return new ArrayList<>();  
+	public ArrayList<Square> getLegalMoves(Board b, Square start) {
+		ArrayList<Square> moves = new ArrayList<Square>();
+
+		if (start.getCol() <= 7 && start.getRow() + 1 <= 7 && start.getRow() != 7) { // down
+			if (!b.getSquareArray()[start.getRow() + 1][start.getCol()].isOccupied() ||
+				b.getSquareArray()[start.getRow() + 1][start.getCol()].getOccupyingPiece().getColor() != color) {
+			  moves.add(b.getSquareArray()[start.getRow() + 1][start.getCol()]);
+			}
+		}
+		return moves;
 	}
 
 //make sure to override this!

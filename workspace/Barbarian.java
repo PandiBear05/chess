@@ -179,7 +179,7 @@ public class Barbarian extends Piece {
         }
       }
 
-      if (start.getCol() <= 7 && start.getRow() + 1 <= 7 && start.getRow() != 7) { // up
+      if (start.getCol() <= 7 && start.getRow() + 1 <= 7 && start.getRow() != 7) { // down
         if (!b.getSquareArray()[start.getRow() + 1][start.getCol()].isOccupied() ||
             b.getSquareArray()[start.getRow() + 1][start.getCol()].getOccupyingPiece().getColor() != color) {
           moves.add(b.getSquareArray()[start.getRow() + 1][start.getCol()]);
