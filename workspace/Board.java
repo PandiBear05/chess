@@ -31,9 +31,19 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
     private static final String RESOURCES_WQUEEN_PNG = "wqueen.png";
     private static final String RESOURCES_WPAWN_PNG = "wpawn.png";
     private static final String RESOURCES_BPAWN_PNG = "bpawn.png";
-    private static final String RESOURCES_barbarian_PNG = "BBarbarian.png";
+    private static final String RESOURCES_bbarbarian_PNG = "BBarbarian.png";
     private static final String RESOURCES_wbarbarian_PNG = "WBarbarian.png";
-
+    private static final String RESOURCES_wpope_PNG = "wpope.png";
+    private static final String RESOURCES_bpope_PNG = "bpope.png";
+    private static final String RESOURCES_blackrocket_PNG = "blackrocket.png";
+    private static final String RESOURCES_whiterocket_PNG = "whiterocket.png";
+    private static final String RESOURCES_wantipawn_PNG = "AntiPawnWhite.png";
+    private static final String RESOURCES_bantipawn_PNG = "AntiPawnBlack.png";
+    private static final String RESOURCES_wmonk_PNG = "wmonk.png";
+    private static final String RESOURCES_bmonk_PNG = "bmonk.png";
+    private static final String RESOURCES_wjester_PNG = "wjester.png";
+    private static final String RESOURCES_bjester_PNG = "bjester.png";
+    
     // Logical and graphical representations of board
     private final Square[][] board;
     private final GameWindow g;
@@ -90,17 +100,44 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
     // number of pieces on either side.
     // it's up to you how you wish to arrange your pieces.
     private void initializePieces() {
-
-        for (int i = 0; i < 8; i++) {
-            board[3][i].put(new Piece(true, RESOURCES_WPAWN_PNG)); // White pieces on second last row
-            board[0][i].put(new Piece(true, RESOURCES_WKING_PNG)); // White pieces on last row
-        }
-        for (int i = 0; i < 8; i++) {
-            board[4][i].put(new Barbarian(true, RESOURCES_wbarbarian_PNG)); // White pieces on second last row
-            board[7][i].put(new Barbarian(false, RESOURCES_barbarian_PNG)); // White pieces on last row
-            
-        }
-        
+        // KINGS
+        board[0][4].put(new KingButLessCode(true, RESOURCES_WKING_PNG));
+        board[7][4].put(new KingButLessCode(false, RESOURCES_BKING_PNG));
+        // QUEENS
+        board[0][3].put(new WeepingQueen(true, RESOURCES_WQUEEN_PNG));
+        board[7][3].put(new WeepingQueen(false, RESOURCES_BQUEEN_PNG));
+        // "PAWNS"
+            board[0][0].put(new Jester(false, RESOURCES_wjester_PNG));
+            board[1][1].put(new Jester(false, RESOURCES_wjester_PNG));
+            board[1][2].put(new Jester(false, RESOURCES_wjester_PNG));
+            board[1][3].put(new Jester(true, RESOURCES_wjester_PNG));
+            board[1][4].put(new Jester(false, RESOURCES_wjester_PNG));
+            board[1][5].put(new Jester(true, RESOURCES_wjester_PNG));
+            board[1][6].put(new Jester(false, RESOURCES_wjester_PNG));
+            board[1][7].put(new Jester(true, RESOURCES_wjester_PNG));
+            board[6][0].put(new Jester(false, RESOURCES_bjester_PNG));
+            board[6][1].put(new Jester(false, RESOURCES_bjester_PNG));
+            board[6][2].put(new Jester(false, RESOURCES_bjester_PNG));
+            board[6][3].put(new Jester(false, RESOURCES_bjester_PNG));
+            board[6][4].put(new Jester(false, RESOURCES_bjester_PNG));
+            board[6][5].put(new Jester(false, RESOURCES_bjester_PNG));
+            board[6][6].put(new Jester(false, RESOURCES_bjester_PNG));
+            board[6][7].put(new Jester(false, RESOURCES_bjester_PNG));
+            // "BISHOPS"
+        board[0][2].put(new Pope(true, RESOURCES_wpope_PNG));
+        board[0][5].put(new Pope(true, RESOURCES_wpope_PNG));
+        board[7][2].put(new Pope(false, RESOURCES_bpope_PNG));
+        board[7][5].put(new Pope(false, RESOURCES_bpope_PNG));
+        // "KNIGHTS"
+        board[7][1].put(new Barbarian(false, RESOURCES_bbarbarian_PNG));
+        board[7][6].put(new Barbarian(false, RESOURCES_bbarbarian_PNG));
+        board[0][6].put(new Barbarian(true, RESOURCES_wbarbarian_PNG));
+        board[0][1].put(new Barbarian(true, RESOURCES_wbarbarian_PNG));
+        // "ROOKS"
+         board[7][0].put(new RookRocket(false, RESOURCES_blackrocket_PNG));
+         board[7][7].put(new RookRocket(false, RESOURCES_blackrocket_PNG));
+         board[0][0].put(new RookRocket(true, RESOURCES_whiterocket_PNG));
+         board[0][7].put(new RookRocket(true, RESOURCES_whiterocket_PNG));
     }
 
     public Square[][] getSquareArray() {
@@ -168,71 +205,75 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        Square endSquare = (Square) this.getComponentAt(new Point(e.getX(), e.getY()));
-        if (fromMoveSquare != null && whiteTurn == currPiece.getColor()) {
-            if (currPiece != null && currPiece.getLegalMoves(this, fromMoveSquare).contains(endSquare) ) {
-                if(currPiece instanceof Barbarian){
-                    Barbarian b = (Barbarian) currPiece;
-                if (b.captured) {
-                    int rng = (int) (Math.random() * 13); // Generates a random number between 0 and 12
-                    if (endSquare.isOccupied()){
-                    b.captured = true;
-                    } else {
-                    b.captured = false;
-                    }
 
-                    if (rng <= 3) {
+        Square endSquare = (Square) this.getComponentAt(new Point(e.getX(), e.getY()));
+        Piece deadSquare = endSquare.getOccupyingPiece(); // to get the endsquare to place it back if isInCheck = true
+
+        if (fromMoveSquare != null && currPiece != null && whiteTurn == currPiece.getColor()) {
+            if (currPiece.getLegalMoves(this, fromMoveSquare).contains(endSquare)) {
+                if (currPiece instanceof Barbarian) {
+                    Barbarian b = (Barbarian) currPiece;
+                    if (b.captured) { // 1/3 chance to capture another piece if Barbarian captured a piece
+                        int rng = (int) (Math.random() * 13); // Generates a random number between 0 and 12
+                        if (endSquare.isOccupied()) {
+                            b.captured = true;
+                        } else {
+                            whiteTurn = !whiteTurn;
+                            b.captured = false;
+                        }
+                        // Captures another piece if barbarian hits the 1/3 chance and lets it go again
+                        if (rng <= 12) {
+                            fromMoveSquare.removePiece();
+                            endSquare.put(b);
+                            if (isInCheck(!whiteTurn) && currPiece instanceof KingButLessCode) {
+                                fromMoveSquare.put(b);
+                                endSquare.removePiece();
+                                endSquare.put(deadSquare);
+                            }
+                            // kills Barbarian if RNG got the 2/3 chance to not capture another piece
+                        } else if (endSquare.isOccupied()
+                                && endSquare.getOccupyingPiece().getColor() == !b.getColor()) {
+                            fromMoveSquare.removePiece();
+                            whiteTurn = !whiteTurn;
+                        }
+                    } else {
+                        if (currPiece instanceof Barbarian && endSquare.isOccupied()) { // checks if barbarian captured
+                                                                                        // a piece
+                            b.captured = true;
+                        } else {
+                            b.captured = false;
+                        }
+                        if (currPiece instanceof Barbarian && b.captured) { // if barbarian captured
+                                                                            // a piece, it will be
+                                                                            // the same player's turn
+                            whiteTurn = currPiece.getColor();
+                        } else {
+                            whiteTurn = !whiteTurn;
+                        }
+                        endSquare.removePiece();
                         fromMoveSquare.removePiece();
                         endSquare.put(b);
-
-
-                    } else if (endSquare.isOccupied() && endSquare.getOccupyingPiece().getColor() == !b.getColor()) {
-                        fromMoveSquare.removePiece();
-                        whiteTurn = !whiteTurn;
-
-                        for (Square[] row : board) {
-                            for (Square s : row) {
-                                s.setBorder(null);
-                            }
+                        if (isInCheck(!whiteTurn) && currPiece instanceof KingButLessCode) {
+                            fromMoveSquare.put(currPiece);
+                            endSquare.removePiece();
+                            endSquare.put(deadSquare);
+                            whiteTurn = currPiece.getColor();
                         }
-                        fromMoveSquare.setDisplay(true);
-                
-                        currPiece = null;
-                        repaint();
+                    }
+                } else {
 
-                        return;
-                    }
-                    
-                    if(!b.captured){
-                        whiteTurn= !whiteTurn;
-                    }
-                    
-                    
-                }
-
-                else {
-
-                    fromMoveSquare.removePiece();
-                    if (currPiece instanceof Barbarian &&  endSquare.isOccupied()) { // checks if barbarian
-                                                                                          // captured a
-                                                                                          // piece
-                        b.captured = true;
-                    } else {
-                        b.captured = false;
-                    }
-                    if (currPiece instanceof Barbarian &&  b.captured) { // if barbarian captured
-                                                                                      // a piece, it will be
-                                                                                      // the same player's turn
-                        whiteTurn = currPiece.getColor();
-                    } else {
-                        whiteTurn = !whiteTurn;
-                    }
-                }
-            }
                     fromMoveSquare.removePiece();
                     endSquare.put(currPiece);
-        }
-            
+                    whiteTurn = !whiteTurn;
+                    if (isInCheck(!whiteTurn) && currPiece instanceof KingButLessCode) {
+                        fromMoveSquare.put(currPiece);
+                        endSquare.removePiece();
+                        endSquare.put(deadSquare);
+                        whiteTurn = currPiece.getColor();
+                    }
+                }
+
+            }
         }
         for (Square[] row : board) {
             for (Square s : row) {
@@ -240,9 +281,38 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
             }
         }
         fromMoveSquare.setDisplay(true);
-
-        currPiece = null;
         repaint();
+        currPiece = null;
+        return;
+    }
+
+    public boolean isInCheck(boolean kingColor) {
+        Square kingSquare = null;
+        outer: for (Square[] row : board) {
+            for (Square square : row) {
+                if (square.isOccupied() && square.getOccupyingPiece() instanceof KingButLessCode) {
+                    Piece king = square.getOccupyingPiece();
+                    if (king.getColor() == kingColor) {
+                        kingSquare = square;
+                        break outer;
+                    }
+                }
+
+            }
+        }
+        for (Square[] row2 : board) {
+            for (Square square2 : row2) {
+                if (square2.isOccupied() && square2.getOccupyingPiece().getColor() != kingColor) {
+                    Piece check = square2.getOccupyingPiece();
+                    ArrayList<Square> controlledSquares = check.getLegalMoves(this, square2);
+                    if (controlledSquares.contains(kingSquare)) {
+                        return true;
+                    }
+
+                }
+            }
+        }
+        return false;
     }
 
     @Override
