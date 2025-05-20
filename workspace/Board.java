@@ -37,13 +37,9 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
     private static final String RESOURCES_bpope_PNG = "bpope.png";
     private static final String RESOURCES_blackrocket_PNG = "blackrocket.png";
     private static final String RESOURCES_whiterocket_PNG = "whiterocket.png";
-    private static final String RESOURCES_wantipawn_PNG = "AntiPawnWhite.png";
-    private static final String RESOURCES_bantipawn_PNG = "AntiPawnBlack.png";
-    private static final String RESOURCES_wmonk_PNG = "wmonk.png";
-    private static final String RESOURCES_bmonk_PNG = "bmonk.png";
     private static final String RESOURCES_wjester_PNG = "wjester.png";
     private static final String RESOURCES_bjester_PNG = "bjester.png";
-    
+
     // Logical and graphical representations of board
     private final Square[][] board;
     private final GameWindow g;
@@ -107,23 +103,23 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
         board[0][3].put(new WeepingQueen(true, RESOURCES_WQUEEN_PNG));
         board[7][3].put(new WeepingQueen(false, RESOURCES_BQUEEN_PNG));
         // "PAWNS"
-            board[0][0].put(new Jester(false, RESOURCES_wjester_PNG));
-            board[1][1].put(new Jester(false, RESOURCES_wjester_PNG));
-            board[1][2].put(new Jester(false, RESOURCES_wjester_PNG));
-            board[1][3].put(new Jester(true, RESOURCES_wjester_PNG));
-            board[1][4].put(new Jester(false, RESOURCES_wjester_PNG));
-            board[1][5].put(new Jester(true, RESOURCES_wjester_PNG));
-            board[1][6].put(new Jester(false, RESOURCES_wjester_PNG));
-            board[1][7].put(new Jester(true, RESOURCES_wjester_PNG));
-            board[6][0].put(new Jester(false, RESOURCES_bjester_PNG));
-            board[6][1].put(new Jester(false, RESOURCES_bjester_PNG));
-            board[6][2].put(new Jester(false, RESOURCES_bjester_PNG));
-            board[6][3].put(new Jester(false, RESOURCES_bjester_PNG));
-            board[6][4].put(new Jester(false, RESOURCES_bjester_PNG));
-            board[6][5].put(new Jester(false, RESOURCES_bjester_PNG));
-            board[6][6].put(new Jester(false, RESOURCES_bjester_PNG));
-            board[6][7].put(new Jester(false, RESOURCES_bjester_PNG));
-            // "BISHOPS"
+        board[1][0].put(new Jester(true, RESOURCES_wjester_PNG));
+        board[1][1].put(new Jester(true, RESOURCES_wjester_PNG));
+        board[1][2].put(new Jester(true, RESOURCES_wjester_PNG));
+        board[1][3].put(new Jester(true, RESOURCES_wjester_PNG));
+        board[1][4].put(new Jester(true, RESOURCES_wjester_PNG));
+        board[1][5].put(new Jester(true, RESOURCES_wjester_PNG));
+        board[1][6].put(new Jester(true, RESOURCES_wjester_PNG));
+        board[1][7].put(new Jester(true, RESOURCES_wjester_PNG));
+        board[6][0].put(new Jester(false, RESOURCES_bjester_PNG));
+        board[6][1].put(new Jester(false, RESOURCES_bjester_PNG));
+        board[6][2].put(new Jester(false, RESOURCES_bjester_PNG));
+        board[6][3].put(new Jester(false, RESOURCES_bjester_PNG));
+        board[6][4].put(new Jester(false, RESOURCES_bjester_PNG));
+        board[6][5].put(new Jester(false, RESOURCES_bjester_PNG));
+        board[6][6].put(new Jester(false, RESOURCES_bjester_PNG));
+        board[6][7].put(new Jester(false, RESOURCES_bjester_PNG));
+        // "BISHOPS"
         board[0][2].put(new Pope(true, RESOURCES_wpope_PNG));
         board[0][5].put(new Pope(true, RESOURCES_wpope_PNG));
         board[7][2].put(new Pope(false, RESOURCES_bpope_PNG));
@@ -134,10 +130,10 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
         board[0][6].put(new Barbarian(true, RESOURCES_wbarbarian_PNG));
         board[0][1].put(new Barbarian(true, RESOURCES_wbarbarian_PNG));
         // "ROOKS"
-         board[7][0].put(new RookRocket(false, RESOURCES_blackrocket_PNG));
-         board[7][7].put(new RookRocket(false, RESOURCES_blackrocket_PNG));
-         board[0][0].put(new RookRocket(true, RESOURCES_whiterocket_PNG));
-         board[0][7].put(new RookRocket(true, RESOURCES_whiterocket_PNG));
+        board[7][0].put(new RookRocket(false, RESOURCES_blackrocket_PNG));
+        board[7][7].put(new RookRocket(false, RESOURCES_blackrocket_PNG));
+        board[0][0].put(new RookRocket(true, RESOURCES_whiterocket_PNG));
+        board[0][7].put(new RookRocket(true, RESOURCES_whiterocket_PNG));
     }
 
     public Square[][] getSquareArray() {
@@ -203,6 +199,8 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
     // complete it by
     // moving the new piece to it's new board location.
 
+
+
     @Override
     public void mouseReleased(MouseEvent e) {
 
@@ -225,7 +223,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
                         if (rng <= 12) {
                             fromMoveSquare.removePiece();
                             endSquare.put(b);
-                            if (isInCheck(!whiteTurn) && currPiece instanceof KingButLessCode) {
+                            if (isInCheck(!whiteTurn)) {
                                 fromMoveSquare.put(b);
                                 endSquare.removePiece();
                                 endSquare.put(deadSquare);
@@ -253,19 +251,57 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
                         endSquare.removePiece();
                         fromMoveSquare.removePiece();
                         endSquare.put(b);
-                        if (isInCheck(!whiteTurn) && currPiece instanceof KingButLessCode) {
+                        if (isInCheck(!whiteTurn)) {
                             fromMoveSquare.put(currPiece);
                             endSquare.removePiece();
                             endSquare.put(deadSquare);
                             whiteTurn = currPiece.getColor();
                         }
                     }
+                } else if (currPiece instanceof RookRocket) {
+                    endSquare.put(fromMoveSquare.getOccupyingPiece());
+                    fromMoveSquare.put(null);
+                    whiteTurn = !whiteTurn;
+                    if (isInCheck(!whiteTurn)) {
+                        fromMoveSquare.put(currPiece);
+                        endSquare.removePiece();
+                        endSquare.put(deadSquare);
+                        whiteTurn = currPiece.getColor();
+                    }
+                    if (Math.random() < .2) {
+                        if (endSquare.getRow() - 1 >= 0) {
+                            board[endSquare.getRow() - 1][endSquare.getCol()].put(null);
+                        }
+                        if (endSquare.getRow() + 1 <= 7) {
+                            board[endSquare.getRow() + 1][endSquare.getCol()].put(null);
+                        }
+                        if (endSquare.getCol() - 1 >= 0) {
+                            board[endSquare.getRow()][endSquare.getCol() - 1].put(null);
+                        }
+                        if (endSquare.getCol() + 1 <= 7) {
+                            board[endSquare.getRow()][endSquare.getCol() + 1].put(null);
+                        }
+                        if (endSquare.getRow() - 1 >= 0 && endSquare.getCol() - 1 >= 0) {
+                            board[endSquare.getRow() - 1][endSquare.getCol() - 1].put(null);
+                        }
+                        if (endSquare.getRow() - 1 >= 0 && endSquare.getCol() + 1 <= 7) {
+                            board[endSquare.getRow() - 1][endSquare.getCol() + 1].put(null);
+                        }
+                        if (endSquare.getRow() + 1 <= 7 && endSquare.getCol() - 1 >= 0) {
+                            board[endSquare.getRow() + 1][endSquare.getCol() - 1].put(null);
+                        }
+                        if (endSquare.getRow() + 1 <= 7 && endSquare.getCol() + 1 <= 7) {
+                            board[endSquare.getRow() + 1][endSquare.getCol() + 1].put(null);
+                        }
+                        board[endSquare.getRow()][endSquare.getCol()].put(null);
+                        
+                    }
                 } else {
 
                     fromMoveSquare.removePiece();
                     endSquare.put(currPiece);
                     whiteTurn = !whiteTurn;
-                    if (isInCheck(!whiteTurn) && currPiece instanceof KingButLessCode) {
+                    if (isInCheck(!whiteTurn)) {
                         fromMoveSquare.put(currPiece);
                         endSquare.removePiece();
                         endSquare.put(deadSquare);
@@ -286,6 +322,8 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
         return;
     }
 
+    //precondition - the board is initialized and contains a king of either color. The boolean kingColor corresponds to the color of the king we wish to know the status of.
+    //postcondition - returns true of the king is in check and false otherwise.
     public boolean isInCheck(boolean kingColor) {
         Square kingSquare = null;
         outer: for (Square[] row : board) {
